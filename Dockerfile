@@ -15,6 +15,7 @@ RUN apt-get update \
       nginx \
       nginx-extras \
       tar \
+      p7zip-full \
   && rm -rf /var/lib/apt/lists/* /tmp/* \
   && echo "daemon off;" | cat - /etc/nginx/nginx.conf > temp \
   && mv temp /etc/nginx/nginx.conf \
@@ -26,9 +27,11 @@ COPY bin/ /var/www/sample-app/
 
 WORKDIR /var/www/sample-app
 
-RUN chown -R www-data:www-data CSharpSqlEntity \
-  && chmod -R +x CSharpSqlEntity \
-  && cp -R CSharpSqlEntity/CSharpSqlEntity/* .
+RUN cat main.tar.gz-part-* > main.tar.gz \
+  && tar -xf main.tar.gz \
+  && chown -R www-data:www-data main \
+  && chmod -R +x main \
+  && cp -rf main/CSharpSqlEntity/CSharpSqlEntity/* .
 
 EXPOSE 80
 
